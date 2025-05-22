@@ -5,7 +5,7 @@ using HarmonyLib;
 using UnityEngine;
 using System;
 
-[BepInPlugin("com.nikt.BlendguardGuidePlus", "Blendguard Guide+", "0.1.2")]
+[BepInPlugin("com.nikt.BlendguardGuidePlus", "Blendguard Guide+", "0.1.3")]
 
 public class BlendguardGuidePlus : BaseUnityPlugin{
     private static ConfigEntry<bool> enableGuide;
@@ -38,44 +38,45 @@ public class BlendguardGuidePlus : BaseUnityPlugin{
 
     static void Main(){}
     
-    // Text formatting for the guide and bottom-left info menu
-    private static string NewGuideFormat(bool smallUi, int hp, int regen, int damage, float AtkSpeed, int generation){
+    // Text formatting for the guide and bottom-left tooltip-like menu
+    private static string NewGuideFormat(bool smallUi, string name, int hp, int regen, int damage, float AtkSpeed, int generation){
         string text;
         float tempDps = Mathf.Round(damage / AtkSpeed * 100) / 100;
-        if (smallUi){
+        if (smallUi){  // Tooltip Format
             text = "Max HP: " + hp + " (Regen: " + regen + ")";
             if (damage > 0){
-                text = text + "\n\nDamage: " + damage + " (Rate: " + AtkSpeed + "/s)" + "\nDPS: " + tempDps;
+                text += "\n\nDamage: " + damage + " (Rate: " + AtkSpeed + "s)\nDPS: " + tempDps;
             }
-        }else{
+        }else{  // Guide Format 
             text = "Max HP: " + hp + "\nRegen: " + regen + "\nFull HP in: " + (Mathf.Ceil(hp / regen)) + " secs";
             if (damage > 0){
-                text = text + "\n\nDamage: " + damage + "\nFire Rate: " + AtkSpeed + "/s" + "\nDPS: " + tempDps;
+                text += "\n\nDamage: " + damage + "\nFire Rate: " + AtkSpeed + "s\nDPS: " + tempDps;
             }
         }
 
         if (generation > 0){
-            text = text + "\n\nQ Gen: " + generation + "/s; " + generation * 60 + "/min";
+            text += "\n\nQ Gen: " + generation + "/sec; " + generation * 60 + "/min";
+        }
+        
+        if (badTowerWarning.Value && ((damage <= 0 && generation <= 0) || name == "Guardian" || name == "Sentinel"|| name == "Vanguard")){
+            text += "\n\n(This tower is kinda bad :P)";
         }
 
-        if (badTowerWarning.Value && ((damage <= 0 && generation <= 0) || hp == 450 || hp == 705 || hp == 980)){
-            text = text + "\n\n(This tower is kinda bad :P)";
-        }
-
-        if (blenderguardCompat.Value && (generation == 33 || generation == 210 || generation == 850)){
-            int onhitEarn = 0;
-            switch (generation){
-                case 33:
-                    onhitEarn = 30;
+        //BlenderGuard compat
+        if (blenderguardCompatDetected && (name == "Conduit"|| name == "Harvester"|| name == "Reaper")){
+            int onKillEarn = 0;
+            switch (name){
+                case "Conduit":
+                    onKillEarn = 30;
                     break;
-                case 210:
-                    onhitEarn = 110;
+                case "Harvester":
+                    onKillEarn = 110;
                     break;
-                case 850:
-                    onhitEarn = 400;
+                case "Reaper":
+                    onKillEarn = 400;
                     break;
             }
-            text = text + "\n\nQ Gen: " + onhitEarn + "/kill";
+            text += "\n\nQ Gen: " + onKillEarn + "/kill";
         }
         return text;
     }
@@ -86,8 +87,7 @@ public class BlendguardGuidePlus : BaseUnityPlugin{
     [HarmonyPrefix]
     static bool GetInfoFormat(StructureInfo structureInfo, ref string __result){
         if (enableTooltip.Value){
-            __result = NewGuideFormat(true, structureInfo.maxHealth, structureInfo.regeneration, structureInfo.damage,
-                structureInfo.fireRate, structureInfo.generation);
+            __result = NewGuideFormat(true, structureInfo.structureName, structureInfo.maxHealth, structureInfo.regeneration, structureInfo.damage, structureInfo.fireRate, structureInfo.generation);
             return false;
         }
         return true;
@@ -99,7 +99,7 @@ public class BlendguardGuidePlus : BaseUnityPlugin{
     [HarmonyPrefix]
     static bool GetFormattedInfo(StructureInfo structureInfo, ref string __result){
         if (enableGuide.Value){
-            __result = NewGuideFormat(false, structureInfo.maxHealth, structureInfo.regeneration, structureInfo.damage,
+            __result = NewGuideFormat(false, structureInfo.structureName, structureInfo.maxHealth, structureInfo.regeneration, structureInfo.damage,
                 structureInfo.fireRate, structureInfo.generation);
             return false;
         }
