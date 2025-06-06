@@ -5,28 +5,30 @@ using HarmonyLib;
 using UnityEngine;
 using System;
 
-[BepInPlugin("com.nikt.BlendguardGuidePlus", "Blendguard Guide+", "0.1.3")]
+[BepInPlugin("com.nikt.BlendguardGuidePlus", "Blendguard Guide+", "0.2.0")]
 
 public class BlendguardGuidePlus : BaseUnityPlugin{
-    private static ConfigEntry<bool> enableGuide;
-    private static ConfigEntry<bool> enableTooltip;
-    private static ConfigEntry<bool> blenderguardCompat;
+    private static ConfigEntry<bool> enableTowerGuide;
+    private static ConfigEntry<bool> enableTowerTooltip;
+    private static ConfigEntry<bool> enableInvaderGuide;
+    private static ConfigEntry<bool> blenderguardianCompat;
     private static ConfigEntry<bool> badTowerWarning;
-    private static bool blenderguardCompatDetected;
+    private static bool bGuardianCompat;
     
     void Awake(){
-        enableGuide = Config.Bind("General", "Guide+", true, "Enable the Overriding of the Guide");
-        enableTooltip = Config.Bind("General", "Tooltip+", true, "Enable the Overriding of the Tooltip");
-        blenderguardCompat = Config.Bind("General", "Check for Blenderguard", true, "Enable to detect and show Blenderguard stats in the guide.");
+        enableTowerGuide = Config.Bind("General", "Tower Guide+", true, "Enable the Overriding of the Tower Guide");
+        enableTowerTooltip = Config.Bind("General", "Tower Tooltip+", true, "Enable the Overriding of the Tower Tooltip");
+        enableInvaderGuide = Config.Bind("General", "Invader Guide+", true, "Enable the Overriding of the Invader Guide");
+        blenderguardianCompat = Config.Bind("General", "Check for Blenderguard", true, "Enable to detect and show Blenderguard stats in the guide.");
         badTowerWarning = Config.Bind("General", "Bad Tower warnings", true, "Enable show the *Bad Tower* Warning");
         
         Logger.LogInfo("Guide+: Mod loaded");
         
         //Blenderguard Compat detection
-        blenderguardCompatDetected = blenderguardCompat.Value;
-        if (blenderguardCompatDetected){
+        bGuardianCompat = blenderguardianCompat.Value;
+        if (bGuardianCompat){
             if (Chainloader.PluginInfos.ContainsKey("com.nikt.BlenderGuardRebalance")){
-                blenderguardCompatDetected = true;
+                bGuardianCompat = true;
                 Logger.LogInfo("Guide+: Blenderguard Compat enabled");
             }else{
                 Logger.LogInfo("Guide+: Blenderguard not detected");
@@ -39,7 +41,7 @@ public class BlendguardGuidePlus : BaseUnityPlugin{
     static void Main(){}
     
     // Text formatting for the guide and bottom-left tooltip-like menu
-    private static string NewGuideFormat(bool smallUi, string name, int hp, int regen, int damage, float AtkSpeed, int generation){
+    private static string NewTowerGuideFormat(bool smallUi, string name, int hp, int regen, int damage, float AtkSpeed, int generation){
         string text;
         float tempDps = Mathf.Round(damage / AtkSpeed * 100) / 100;
         if (smallUi){  // Tooltip Format
@@ -63,7 +65,7 @@ public class BlendguardGuidePlus : BaseUnityPlugin{
         }
 
         //BlenderGuard compat
-        if (blenderguardCompatDetected && (name == "Conduit"|| name == "Harvester"|| name == "Reaper")){
+        if (bGuardianCompat && (name == "Conduit"|| name == "Harvester"|| name == "Reaper")){
             int onKillEarn = 0;
             switch (name){
                 case "Conduit":
@@ -80,27 +82,51 @@ public class BlendguardGuidePlus : BaseUnityPlugin{
         }
         return text;
     }
+    private static string NewInvaderGuideFormat(bool smallUi, string name, int hp, int damage, float speed, string focus, bool canFly){
+        string text;
+        text = $"Max HP: {hp}";
+        if (bGuardianCompat){
+            text += $"\nSpeed: {speed} ";
+        }else{
+            text += "\n";
+        }
+        if (canFly){
+            text += "(Flying)";
+        }
+        text += $"\n\nFocuses: {focus} \nDamage: {damage} ";
+        return text;
+    }
 
-    //Override for the mini UI in-game
+    //Override for the Towers' mini UI in-game
     [HarmonyPatch(typeof(UIManager), "GetInfoFormat")]
     [HarmonyPatch(new Type[] { typeof(StructureInfo) })]
     [HarmonyPrefix]
-    static bool GetInfoFormat(StructureInfo structureInfo, ref string __result){
-        if (enableTooltip.Value){
-            __result = NewGuideFormat(true, structureInfo.structureName, structureInfo.maxHealth, structureInfo.regeneration, structureInfo.damage, structureInfo.fireRate, structureInfo.generation);
+    static bool GetTowerInfoFormat(StructureInfo structureInfo, ref string __result){
+        if (enableTowerTooltip.Value){
+            __result = NewTowerGuideFormat(true, structureInfo.structureName, structureInfo.maxHealth, structureInfo.regeneration, structureInfo.damage, structureInfo.fireRate, structureInfo.generation);
             return false;
         }
         return true;
     }
-
-    //Override for the Guide Menu
+    //Override for the Tower Guide Menu
     [HarmonyPatch(typeof(StructureInfoDisplay), "GetFormattedInfo")]
     [HarmonyPatch(new Type[] { typeof(StructureInfo) })]
     [HarmonyPrefix]
-    static bool GetFormattedInfo(StructureInfo structureInfo, ref string __result){
-        if (enableGuide.Value){
-            __result = NewGuideFormat(false, structureInfo.structureName, structureInfo.maxHealth, structureInfo.regeneration, structureInfo.damage,
-                structureInfo.fireRate, structureInfo.generation);
+    static bool GetTowerInfo(StructureInfo structureInfo, ref string __result){
+        if (enableTowerGuide.Value){
+            __result = NewTowerGuideFormat(false, structureInfo.structureName, structureInfo.maxHealth, structureInfo.regeneration, structureInfo.damage, structureInfo.fireRate, structureInfo.generation);
+            return false;
+        }
+        return true;
+    }
+    
+    //Override for the Invader Guide Menu
+    [HarmonyPatch(typeof(InvaderInfoDisplay), "GetFormattedInfo")]
+    [HarmonyPatch(new Type[] { typeof(InvaderInfo) })]
+    [HarmonyPrefix]
+    static bool GetInvaderInfo(InvaderInfo invaderInfo, ref string __result){
+        if (enableInvaderGuide.Value){
+            __result = NewInvaderGuideFormat(false, invaderInfo.invaderName, invaderInfo.maxHealth, invaderInfo.attackPower, invaderInfo.speed, invaderInfo.targetFocus, invaderInfo.canFly);
             return false;
         }
         return true;
