@@ -420,11 +420,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Laptop\\OneDrive\\Dokumenty\\GitHub\\BlendguardGuidePlus\\BlendguardGuidePlus\\BlendguardGuidePlus.csproj",
+      "projectUniqueName": "C:\\Users\\Laptop\\OneDrive\\Dokumenty\\GitHub\\BlenderGuardRebalance\\BlendguardGuidePlus\\BlendguardGuidePlus.csproj",
       "projectName": "BlendguardGuidePlus",
-      "projectPath": "C:\\Users\\Laptop\\OneDrive\\Dokumenty\\GitHub\\BlendguardGuidePlus\\BlendguardGuidePlus\\BlendguardGuidePlus.csproj",
+      "projectPath": "C:\\Users\\Laptop\\OneDrive\\Dokumenty\\GitHub\\BlenderGuardRebalance\\BlendguardGuidePlus\\BlendguardGuidePlus.csproj",
       "packagesPath": "C:\\Users\\Laptop\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Laptop\\OneDrive\\Dokumenty\\GitHub\\BlendguardGuidePlus\\BlendguardGuidePlus\\obj\\",
+      "outputPath": "C:\\Users\\Laptop\\OneDrive\\Dokumenty\\GitHub\\BlenderGuardRebalance\\BlendguardGuidePlus\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Laptop\\AppData\\Roaming\\NuGet\\NuGet.Config"
