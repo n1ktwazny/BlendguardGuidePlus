@@ -5,7 +5,7 @@ using HarmonyLib;
 using UnityEngine;
 using System;
 
-[BepInPlugin("com.nikt.BlendguardGuidePlus", "Blendguard Guide+", "0.2.0")]
+[BepInPlugin("com.nikt.BlendguardGuidePlus", "Blendguard Guide+", "0.2.1")]
 
 public class BlendguardGuidePlus : BaseUnityPlugin{
     private static ConfigEntry<bool> enableTowerGuide;
@@ -27,11 +27,11 @@ public class BlendguardGuidePlus : BaseUnityPlugin{
         //Blenderguard Compat detection
         bGuardianCompat = blenderguardianCompat.Value;
         if (bGuardianCompat){
-            if (Chainloader.PluginInfos.ContainsKey("com.nikt.BlenderGuardRebalance")){
+            if (Chainloader.PluginInfos.ContainsKey("com.nikt.BlendGuardRebalance")){
                 bGuardianCompat = true;
-                Logger.LogInfo("Guide+: Blenderguard Compat enabled");
+                Logger.LogInfo("Guide+: Blendguard rebalanced Compat enabled");
             }else{
-                Logger.LogInfo("Guide+: Blenderguard not detected");
+                Logger.LogInfo("Guide+: Blendguard rebalanced not detected");
             }
         }
         
@@ -64,22 +64,22 @@ public class BlendguardGuidePlus : BaseUnityPlugin{
             text += "\n\n(This tower is kinda bad :P)";
         }
 
-        //BlenderGuard compat
-        if (bGuardianCompat && (name == "Conduit"|| name == "Harvester"|| name == "Reaper")){
-            int onKillEarn = 0;
-            switch (name){
-                case "Conduit":
-                    onKillEarn = 30;
-                    break;
-                case "Harvester":
-                    onKillEarn = 110;
-                    break;
-                case "Reaper":
-                    onKillEarn = 400;
-                    break;
-            }
-            text += "\n\nQ Gen: " + onKillEarn + "/kill";
-        }
+        //BlendGuard Rebalanced compat
+        //if (bGuardianCompat && (name == "Conduit"|| name == "Harvester"|| name == "Reaper")){
+        //    int onKillEarn = 0;
+        //    switch (name){
+        //        case "Conduit":
+        //            onKillEarn = 30;
+        //            break;
+        //        case "Harvester":
+        //            onKillEarn = 110;
+        //            break;
+        //        case "Reaper":
+        //            onKillEarn = 400;
+        //            break;
+        //    }
+        //    text += "\n\nQ Gen: " + onKillEarn + "/kill";
+        //}
         return text;
     }
     private static string NewInvaderGuideFormat(bool smallUi, string name, int hp, int damage, float speed, string focus, bool canFly){
