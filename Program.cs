@@ -5,25 +5,32 @@ using HarmonyLib;
 using UnityEngine;
 using System;
 
-[BepInPlugin("com.nikt.BlendguardGuidePlus", "Blendguard Guide+", "0.2.1")]
+[BepInPlugin("com.nikt.BlendguardGuidePlus", "Blendguard Guide+", "0.2.2")]
 
 public class BlendguardGuidePlus : BaseUnityPlugin{
     private static ConfigEntry<bool> enableTowerGuide;
     private static ConfigEntry<bool> enableTowerTooltip;
     private static ConfigEntry<bool> enableInvaderGuide;
     private static ConfigEntry<bool> blenderguardianCompat;
+    private static ConfigEntry<bool> noSpeedWarning;
     private static ConfigEntry<bool> badTowerWarning;
     private static bool bGuardianCompat;
+    private static bool generalFixesInstalled;
     
     void Awake(){
         enableTowerGuide = Config.Bind("General", "Tower Guide+", true, "Enable the Overriding of the Tower Guide");
         enableTowerTooltip = Config.Bind("General", "Tower Tooltip+", true, "Enable the Overriding of the Tower Tooltip");
         enableInvaderGuide = Config.Bind("General", "Invader Guide+", true, "Enable the Overriding of the Invader Guide");
         blenderguardianCompat = Config.Bind("General", "Check for Blenderguard", true, "Enable to detect and show Blenderguard stats in the guide.");
+        noSpeedWarning = Config.Bind("General", "No Speed Warning", true, "Enable the 'speed not implemented' warning(Blendguard without the General Fixes mod does implement the speed of invaders)");
         badTowerWarning = Config.Bind("General", "Bad Tower warnings", true, "Enable show the *Bad Tower* Warning");
         
         Logger.LogInfo("Guide+: Mod loaded");
         
+        Harmony.CreateAndPatchAll(typeof(BlendguardGuidePlus));
+    }
+
+    private void Start(){
         //Blenderguard Compat detection
         bGuardianCompat = blenderguardianCompat.Value;
         if (bGuardianCompat){
@@ -34,8 +41,12 @@ public class BlendguardGuidePlus : BaseUnityPlugin{
                 Logger.LogInfo("Guide+: Blendguard rebalanced not detected");
             }
         }
-        
-        Harmony.CreateAndPatchAll(typeof(BlendguardGuidePlus));
+
+        if (Chainloader.PluginInfos.ContainsKey("com.nikt.BlendguardGFixes")){
+            generalFixesInstalled = true;
+        }else{
+            generalFixesInstalled = false;
+        }
     }
 
     static void Main(){}
@@ -63,37 +74,39 @@ public class BlendguardGuidePlus : BaseUnityPlugin{
         if (badTowerWarning.Value && ((damage <= 0 && generation <= 0) || name == "Guardian" || name == "Sentinel"|| name == "Vanguard")){
             text += "\n\n(This tower is kinda bad :P)";
         }
-
-        //BlendGuard Rebalanced compat
-        //if (bGuardianCompat && (name == "Conduit"|| name == "Harvester"|| name == "Reaper")){
-        //    int onKillEarn = 0;
-        //    switch (name){
-        //        case "Conduit":
-        //            onKillEarn = 30;
-        //            break;
-        //        case "Harvester":
-        //            onKillEarn = 110;
-        //            break;
-        //        case "Reaper":
-        //            onKillEarn = 400;
-        //            break;
-        //    }
-        //    text += "\n\nQ Gen: " + onKillEarn + "/kill";
-        //}
         return text;
     }
     private static string NewInvaderGuideFormat(bool smallUi, string name, int hp, int damage, float speed, string focus, bool canFly){
         string text;
         text = $"Max HP: {hp}";
-        if (bGuardianCompat){
-            text += $"\nSpeed: {speed} ";
+        if (generalFixesInstalled){
+            string spd = "??? (mod broke, report pls)";
+            switch(speed){
+                case 1f:
+                    spd = "Normal";
+                    break;
+                case 2f:
+                    spd = "Fast";
+                    break;
+                case 0.5f:
+                    spd = "Slow";
+                    break;
+            }
+            text += $"\nSpeed: {spd}";
         }else{
             text += "\n";
+            if (noSpeedWarning.Value){
+                text += "Speed: Normal*";
+            }
         }
         if (canFly){
             text += "(Flying)";
         }
         text += $"\n\nFocuses: {focus} \nDamage: {damage} ";
+        
+        if (!generalFixesInstalled && noSpeedWarning.Value){
+            text += "\n\nInstall 'General Fixes' mod for speed <3";
+        }
         return text;
     }
 

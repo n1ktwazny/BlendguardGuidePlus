@@ -1,0 +1,17 @@
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\bin\Debug\netstandard2.1\BlendguardGuidePlus.deps.json
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\bin\Debug\netstandard2.1\BlendguardGuidePlus.dll
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\bin\Debug\netstandard2.1\BlendguardGuidePlus.pdb
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\bin\Debug\netstandard2.1\0Harmony.dll
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\bin\Debug\netstandard2.1\Assembly-CSharp.dll
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\bin\Debug\netstandard2.1\BepInEx.dll
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\bin\Debug\netstandard2.1\UnityEngine.CoreModule.dll
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\bin\Debug\netstandard2.1\UnityEngine.dll
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\bin\Debug\netstandard2.1\UnityEngine.PhysicsModule.dll
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\obj\Debug\netstandard2.1\BlendguardGuidePlus.csproj.AssemblyReference.cache
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\obj\Debug\netstandard2.1\BlendguardGuidePlus.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\obj\Debug\netstandard2.1\BlendguardGuidePlus.AssemblyInfoInputs.cache
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\obj\Debug\netstandard2.1\BlendguardGuidePlus.AssemblyInfo.cs
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\obj\Debug\netstandard2.1\BlendguardGuidePlus.csproj.CoreCompileInputs.cache
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\obj\Debug\netstandard2.1\BlendguardGuidePlus.csproj.CopyComplete
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\obj\Debug\netstandard2.1\BlendguardGuidePlus.dll
+C:\Users\Laptop\OneDrive\Dokumenty\GitHub\BlenderGuardRebalance\BlendguardGuidePlus\obj\Debug\netstandard2.1\BlendguardGuidePlus.pdb
